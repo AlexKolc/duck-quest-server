@@ -15,7 +15,6 @@ const client = new MongoClient(uri, {
 
 let db;
 
-// ✅ Подключаемся один раз при старте
 async function startServer() {
     try {
         await client.connect();
@@ -102,6 +101,26 @@ app.get('/user-ducks/:username', async (req, res) => {
 
     } catch (e) {
         console.error('Ошибка при получении уток для пользователя:', e);
+        res.status(500).json({ success: false, message: 'Ошибка сервера' });
+    }
+});
+
+app.post('/add-duck', async (req, res) => {
+    try {
+        const { username, duckId } = req.body;
+
+        const result = await db.collection('Users').updateOne(
+            { username },
+            { $addToSet: { found_ducks: duckId } }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ success: false, message: 'Пользователь не найден' });
+        }
+
+        res.json({ success: true, message: 'Утка добавлена' });
+    } catch (e) {
+        console.error('Ошибка при добавлении утки:', e);
         res.status(500).json({ success: false, message: 'Ошибка сервера' });
     }
 });
