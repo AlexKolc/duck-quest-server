@@ -50,20 +50,9 @@ app.post('/create-user', async (req, res) => {
     try {
         const { username } = req.body;
 
-        if (!username) {
-            return res.status(400).json({ success: false, message: 'Не указан username' });
-        }
-
-        const existing = await db.collection('Users').findOne({ 'user.username': username });
-        if (existing) {
-            return res.status(409).json({ success: false, message: 'Пользователь уже существует' });
-        }
-
         const userObject = {
-            user: {
-                username,
-                found_ducks: []
-            }
+            username,
+            found_ducks: []
         };
 
         const result = await db.collection('Users').insertOne(userObject);
