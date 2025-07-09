@@ -84,7 +84,7 @@ app.get('/user-ducks/:username', async (req, res) => {
 
     try {
         // 1. Найдём пользователя по имени
-        const user = await db.collection('users').findOne({ username });
+        const user = await db.collection('Users').findOne({ username });
 
         if (!user) {
             return res.status(404).json({ success: false, message: 'Пользователь не найден' });
@@ -93,12 +93,12 @@ app.get('/user-ducks/:username', async (req, res) => {
         const foundDuckIds = user.found_ducks || [];
 
         // 2. Найдём найденных уток
-        const foundDucks = await db.collection('ducks').find({
+        const foundDucks = await db.collection('Ducks').find({
             _id: { $in: foundDuckIds }
         }).toArray();
 
         // 3. Найдём ненайденных уток
-        const notFoundDucks = await db.collection('ducks').find({
+        const notFoundDucks = await db.collection('Ducks').find({
             _id: { $nin: foundDuckIds }
         }).toArray();
 
