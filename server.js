@@ -7,7 +7,11 @@ app.use(express.json());
 app.use(cors()); // чтобы разрешить запросы с клиента
 
 const uri = "mongodb+srv://alexxkolcc:nTCZhATICeXfoSAr@duckcluster.h8flirt.mongodb.net/?retryWrites=true&w=majority&appName=DuckCluster";
-const client = new MongoClient(uri);
+const client = new MongoClient(uri, {
+    tls: true,
+    tlsAllowInvalidCertificates: false,
+    serverSelectionTimeoutMS: 5000,
+});;
 
 app.get('/get-by-name', async (req, res) => {
     try {
