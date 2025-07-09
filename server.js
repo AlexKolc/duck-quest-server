@@ -79,4 +79,39 @@ app.get('/get-all-ducks', async (req, res) => {
     }
 });
 
+app.get('/user-ducks/:username', async (req, res) => {
+    const username = req.params.username;
+
+    try {
+        // 1. Найдём пользователя по имени
+        const user = await db.collection('users').findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'Пользователь не найден' });
+        }
+
+        const foundDuckIds = user.found_ducks || [];
+
+        // 2. Найдём найденных уток
+        const foundDucks = await db.collection('ducks').find({
+            _id: { $in: foundDuckIds }
+        }).toArray();
+
+        // 3. Найдём ненайденных уток
+        const notFoundDucks = await db.collection('ducks').find({
+            _id: { $nin: foundDuckIds }
+        }).toArray();
+
+        res.json({
+            success: true,
+            found: foundDucks,
+            notFound: notFoundDucks
+        });
+
+    } catch (e) {
+        console.error('Ошибка при получении уток для пользователя:', e);
+        res.status(500).json({ success: false, message: 'Ошибка сервера' });
+    }
+});
+
 startServer();
