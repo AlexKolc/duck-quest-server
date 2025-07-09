@@ -39,6 +39,10 @@ app.get('/get-user-by-name', async (req, res) => {
 
         const user = await db.collection('Users').findOne({ username });
 
+        if (!user) {
+            return res.json({ success: false, message: 'Пользователь не найден' });
+        }
+
         res.json({ success: true, user });
     } catch (e) {
         console.error('Ошибка при поиске пользователя:', e);
