@@ -1,6 +1,7 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
 const cors = require('cors');
+const { ObjectId } = require('mongodb');
 
 const app = express();
 app.use(express.json());
@@ -71,7 +72,6 @@ app.get('/user-ducks/:username', async (req, res) => {
     const username = req.params.username;
 
     try {
-        // 1. Найдём пользователя по имени
         const user = await db.collection('Users').findOne({ username });
 
         if (!user) {
@@ -80,16 +80,17 @@ app.get('/user-ducks/:username', async (req, res) => {
 
         const foundDuckIds = user.found_ducks || [];
 
+        // Конвертация строк в ObjectId
+        const objectIdArray = foundDuckIds.map(id => new ObjectId(id));
+
         const allDucks = await db.collection('Ducks').find().toArray();
 
-        // 2. Найдём найденных уток
         const foundDucks = await db.collection('Ducks').find({
-            _id: { $in: foundDuckIds }
+            _id: { $in: objectIdArray }
         }).toArray();
 
-        // 3. Найдём ненайденных уток
         const notFoundDucks = await db.collection('Ducks').find({
-            _id: { $nin: foundDuckIds }
+            _id: { $nin: objectIdArray }
         }).toArray();
 
         res.json({
