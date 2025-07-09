@@ -18,6 +18,7 @@ async function start() {
 
         // Определяем порт здесь, перед запуском сервера
         const PORT = process.env.PORT || 3000;
+        console.log(`PORT: ${PORT}`);
         app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
     } catch (e) {
         console.error('Failed to connect to DB', e);
