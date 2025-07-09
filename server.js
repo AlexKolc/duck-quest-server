@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const uri = "mongodb+srv://alexxkolcc:nTC@duckcluster.h8flirt.mongodb.net/?retryWrites=true&w=majority&appName=DuckCluster";
+const uri = "mongodb+srv://alexxkolcc:nTCZhATICeXfoSAr@duckcluster.h8flirt.mongodb.net/?retryWrites=true&w=majority&appName=DuckCluster";
 const client = new MongoClient(uri);
 
 let db;
