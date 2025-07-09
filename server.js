@@ -68,17 +68,6 @@ app.post('/create-user', async (req, res) => {
     }
 });
 
-app.get('/get-all-ducks', async (req, res) => {
-    try {
-        const result = await db.collection('Ducks').find().toArray();
-
-        res.json({ success: true, ducks: result });
-    } catch (e) {
-        console.error('Ошибка при получении уточек:', e);
-        res.status(500).json({ success: false, message: 'Ошибка сервера' });
-    }
-});
-
 app.get('/user-ducks/:username', async (req, res) => {
     const username = req.params.username;
 
@@ -92,6 +81,8 @@ app.get('/user-ducks/:username', async (req, res) => {
 
         const foundDuckIds = user.found_ducks || [];
 
+        const allDucks = await db.collection('Ducks').find().toArray();
+
         // 2. Найдём найденных уток
         const foundDucks = await db.collection('Ducks').find({
             _id: { $in: foundDuckIds }
@@ -104,6 +95,7 @@ app.get('/user-ducks/:username', async (req, res) => {
 
         res.json({
             success: true,
+            all: allDucks,
             found: foundDucks,
             notFound: notFoundDucks
         });
