@@ -70,11 +70,11 @@ app.post('/create-user', async (req, res) => {
 
 app.get('/get-all-ducks', async (req, res) => {
     try {
-        const result = await db.collection('Ducks').getAll();
+        const result = await db.collection('Ducks').find().toArray();
 
-        res.json({ success: true, ducks: result.rows });
+        res.json({ success: true, ducks: result });
     } catch (e) {
-        console.error('Ошибка при создании пользователя:', e);
+        console.error('Ошибка при получении уточек:', e);
         res.status(500).json({ success: false, message: 'Ошибка сервера' });
     }
 });
