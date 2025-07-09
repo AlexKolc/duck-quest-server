@@ -68,4 +68,15 @@ app.post('/create-user', async (req, res) => {
     }
 });
 
+app.get('/get-all-ducks', async (req, res) => {
+    try {
+        const result = await db.collection('Ducks').getAll();
+
+        res.json({ success: true, ducks: result.rows });
+    } catch (e) {
+        console.error('Ошибка при создании пользователя:', e);
+        res.status(500).json({ success: false, message: 'Ошибка сервера' });
+    }
+});
+
 startServer();
