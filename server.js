@@ -110,9 +110,11 @@ app.post('/add-duck', async (req, res) => {
     try {
         const { username, duckId } = req.body;
 
+        const objectId = new ObjectId(duckId);
+
         const result = await db.collection('Users').updateOne(
             { username },
-            { $addToSet: { found_ducks: duckId } }
+            { $addToSet: { found_ducks: objectId } }
         );
 
         if (result.matchedCount === 0) {
